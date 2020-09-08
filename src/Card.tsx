@@ -1,5 +1,4 @@
 import React from 'react';
-import {PureComponent} from 'react';
 import {
   Image,
   StyleSheet,
@@ -49,23 +48,19 @@ export type CardPropTypes = {
   shadow?: boolean;
 };
 
-class Card extends PureComponent<CardPropTypes> {
-  static displayName = 'Card';
-  static defaultProps = {
-    selected: false,
-    shadow: false,
-    borderRadius: 0,
-    width: 300,
-    height: 300,
-  };
-  styles: any;
-
-  constructor(props: CardPropTypes) {
-    super(props);
-  }
-
-  renderOverlayIcon() {
-    const {selected} = this.props;
+function Card(props: CardPropTypes) {
+  const {
+    width = 200,
+    source,
+    height = 300,
+    borderRadius,
+    borderColor,
+    borderWidth,
+    onPress,
+    selected,
+    shadow,
+  } = props;
+  const renderOverlayIcon = () => {
     return selected ? (
       <Image
         source={{uri: checkIcon}}
@@ -80,37 +75,24 @@ class Card extends PureComponent<CardPropTypes> {
         borderRadius={6}
       />
     ) : undefined;
-  }
+  };
 
-  render() {
-    const {
-      width,
-      source,
-      height,
-      borderRadius,
-      borderColor,
-      borderWidth,
-      onPress,
-      selected,
-      shadow,
-    } = this.props;
-    return (
-      <TouchableOpacity onPress={onPress} style={shadow && styles.shadow}>
-        <View>
-          <Image
-            borderRadius={borderRadius}
-            borderWidth={borderWidth}
-            borderColor={borderColor}
-            style={selected && styles.selected}
-            source={{uri: source}}
-            width={width}
-            height={height}
-          />
-          {selected && this.renderOverlayIcon()}
-        </View>
-      </TouchableOpacity>
-    );
-  }
+  return (
+    <TouchableOpacity onPress={onPress} style={shadow && styles.shadow}>
+      <View>
+        <Image
+          borderRadius={borderRadius}
+          borderWidth={borderWidth}
+          borderColor={borderColor}
+          style={selected && styles.selected}
+          source={{uri: source}}
+          width={width}
+          height={height}
+        />
+        {selected && renderOverlayIcon()}
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 export {Card};

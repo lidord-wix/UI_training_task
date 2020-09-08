@@ -1,5 +1,4 @@
-import React from 'react';
-import {PureComponent} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ImageSourcePropType, Animated, Text} from 'react-native';
 
 export type BadgePropTypes = {
@@ -21,47 +20,35 @@ export type BadgePropTypes = {
   text?: String;
 };
 
-class Badge extends PureComponent<BadgePropTypes> {
-  static displayName = 'Badge';
-  static defaultProps = {
-    size: 'medium',
-    backgroundColor: 'red',
-  };
-  styles: any;
+function Badge(props: BadgePropTypes) {
+  const [startValue] = useState(new Animated.Value(0.5));
+  const [endValue] = useState(1);
 
-  constructor(props: BadgePropTypes) {
-    super(props);
-    this.state = {
-      startValue: new Animated.Value(0.5),
-      endValue: 1,
-    };
-  }
-
-  componentDidMount() {
-    Animated.spring(this.state.startValue, {
-      toValue: this.state.endValue,
+  useEffect(() => {
+    Animated.spring(startValue, {
+      toValue: endValue,
       friction: 1,
       useNativeDriver: true,
     }).start();
-  }
+  });
 
-  renderText() {
-    const {text} = this.props;
+  const {backgroundColor = 'red', source, text, size = 'medium'} = props;
+
+  const renderText = () => {
     return (
       <Text
         // eslint-disable-next-line react-native/no-inline-styles
         style={{
           color: 'white',
           fontWeight: '800',
-          fontSize: this.getSize() - 4,
+          fontSize: getSize() - 4,
         }}>
         {' ' + text}
       </Text>
     );
-  }
+  };
 
-  getSize() {
-    const {size} = this.props;
+  const getSize = () => {
     switch (size) {
       case 'small':
         return 15;
@@ -70,51 +57,47 @@ class Badge extends PureComponent<BadgePropTypes> {
       default:
         return 18;
     }
-  }
+  };
 
-  render() {
-    const {backgroundColor, source, text} = this.props;
-
-    if (source) {
-      return (
-        <Animated.Image
-          alignSelf={'center'}
-          borderRadius={10}
-          style={{
-            width: this.getSize(),
-            height: this.getSize(),
-            transform: [
-              {
-                scale: this.state.startValue,
-              },
-            ],
-          }}
-          top={-26}
-          source={{uri: source}}
-          right={-36}
-        />
-      );
-    } else if (text) {
-      return (
-        <Animated.View
-          alignSelf={'center'}
-          borderRadius={10}
-          width={(text.length + 1) * 0.5 * this.getSize()}
-          height={this.getSize()}
-          style={{
-            transform: [
-              {
-                scale: this.state.startValue,
-              },
-            ],
-          }}
-          backgroundColor={backgroundColor}
-          top={-26}
-          right={-36}>
-          {this.renderText()}
-        </Animated.View>
-      );
-    }
+  if (source) {
+    return (
+      <Animated.Image
+        alignSelf={'center'}
+        borderRadius={10}
+        style={{
+          width: getSize(),
+          height: getSize(),
+          transform: [
+            {
+              scale: startValue,
+            },
+          ],
+        }}
+        top={-26}
+        source={{uri: source}}
+        right={-36}
+      />
+    );
+  } else if (text) {
+    return (
+      <Animated.View
+        alignSelf={'center'}
+        borderRadius={10}
+        width={(text.length + 1) * 0.5 * getSize()}
+        height={getSize()}
+        style={{
+          transform: [
+            {
+              scale: startValue,
+            },
+          ],
+        }}
+        backgroundColor={backgroundColor}
+        top={-26}
+        right={-36}>
+        {renderText()}
+      </Animated.View>
+    );
   }
 }
 

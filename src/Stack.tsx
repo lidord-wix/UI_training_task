@@ -1,19 +1,13 @@
 import React from 'react';
-import {PureComponent} from 'react';
 import {View} from 'react-native';
 import _ from 'lodash';
 
 export type StackPropTypes = {};
 
-class Stack extends PureComponent<StackPropTypes> {
-  static displayName = 'Stack';
+function Stack(props) {
+  const {children} = props;
 
-  constructor(props: StackPropTypes) {
-    super(props);
-  }
-
-  renderChildren() {
-    const {children} = this.props;
+  const renderChildren = () => {
     const stackCounter = _.size(children);
     const childrenArray = React.Children.map(children, (child, index) => {
       return (
@@ -58,15 +52,13 @@ class Stack extends PureComponent<StackPropTypes> {
     }
 
     return childrenArray;
-  }
+  };
 
-  render() {
-    return (
-      <View alignSelf={'center'} marginTop={50}>
-        {this.renderChildren()}
-      </View>
-    );
-  }
+  return (
+    <View alignSelf={'center'} marginTop={50}>
+      {renderChildren()}
+    </View>
+  );
 }
 
 export {Stack};

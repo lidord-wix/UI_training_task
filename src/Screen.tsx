@@ -46,8 +46,6 @@ class Screen extends PureComponent {
       <Card
         source={imageSource}
         key={index}
-        width={200}
-        height={300}
         shadow
         onPress={() => this.toggleSelected(movie)}
         selected={_.includes(this.state.selected, movie)}

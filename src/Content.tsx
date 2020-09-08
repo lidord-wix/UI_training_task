@@ -1,5 +1,5 @@
 import React from 'react';
-import {PureComponent} from 'react';
+import {useState} from 'react';
 import {Text, ScrollView, StyleSheet, LayoutAnimation} from 'react-native';
 
 export type ContentPropTypes = {
@@ -13,62 +13,38 @@ export type ContentPropTypes = {
   content: string;
 };
 
-type State = {
-  expanded: boolean;
-};
+function Content(props: ContentPropTypes) {
+  const [expanded, setExpanded] = useState(false);
 
-class Content extends PureComponent<ContentPropTypes, State> {
-  static displayName = 'Content';
-  static defaultProps = {
-    title: 'Title',
-    content: 'Content',
+  const onExpand = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    setExpanded(!expanded);
   };
 
-  constructor(props: ContentPropTypes) {
-    super(props);
+  const {title, content} = props;
 
-    this.state = {
-      expanded: false,
-    };
-  }
-
-  onExpand() {
-    return () => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-      this.setState({
-        expanded: !this.state.expanded,
-      });
-    };
-  }
-
-  render() {
-    const {title, content} = this.props;
-
-    return (
-      <ScrollView style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
-        <Text
-          numberOfLines={!this.state.expanded ? 2 : undefined}
-          style={styles.content}>
-          {content}
-        </Text>
-        {content.length > 100 ? (
-          this.state.expanded ? (
-            <Text style={styles.button} onPress={this.onExpand()}>
-              show less
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
+      <Text numberOfLines={!expanded ? 2 : undefined} style={styles.content}>
+        {content}
+      </Text>
+      {content.length > 100 ? (
+        expanded ? (
+          <Text style={styles.button} onPress={() => onExpand()}>
+            show less
+          </Text>
+        ) : (
+          content &&
+          content.length > 50 && (
+            <Text style={styles.button} onPress={() => onExpand()}>
+              show more
             </Text>
-          ) : (
-            this.props.content &&
-            this.props.content.length > 50 && (
-              <Text style={styles.button} onPress={this.onExpand()}>
-                show more
-              </Text>
-            )
           )
-        ) : undefined}
-      </ScrollView>
-    );
-  }
+        )
+      ) : undefined}
+    </ScrollView>
+  );
 }
 
 export {Content};

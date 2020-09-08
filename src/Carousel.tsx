@@ -1,5 +1,4 @@
 import React from 'react';
-import {PureComponent} from 'react';
 import {View, ScrollView} from 'react-native';
 
 export type CarouselPropTypes = {
@@ -9,19 +8,10 @@ export type CarouselPropTypes = {
   onScroll?: () => void;
 };
 
-class Carousel extends PureComponent<CarouselPropTypes> {
-  static displayName = 'Carousel';
-  static default: {
-    horizontal: true;
-  };
+function Carousel(props) {
+  const {onScroll, children} = props;
 
-  constructor(props: CarouselPropTypes) {
-    super(props);
-  }
-
-  renderChildren() {
-    const {children} = this.props;
-
+  const renderChildren = () => {
     const childrenArray = React.Children.map(children, (child, index) => {
       return (
         child && (
@@ -33,20 +23,17 @@ class Carousel extends PureComponent<CarouselPropTypes> {
     });
 
     return childrenArray;
-  }
+  };
 
-  render() {
-    const {onScroll} = this.props;
-    return (
-      <ScrollView
-        snapToInterval={200}
-        onScroll={onScroll}
-        scrollEventThrottle={10}
-        horizontal>
-        {this.renderChildren()}
-      </ScrollView>
-    );
-  }
+  return (
+    <ScrollView
+      snapToInterval={200}
+      onScroll={onScroll}
+      scrollEventThrottle={10}
+      horizontal>
+      {renderChildren()}
+    </ScrollView>
+  );
 }
 
 export {Carousel};
